@@ -28,7 +28,7 @@ namespace mmctime
     double coal_mix_ratio(const btree& btree, const mc_state& mc_state,  double mix_prob, T mix_coal, kingman km_coal);
 
     template <typename T>
-    double obs_lp(const btree& btree, const mc_state& mc_state, T obs);
+    double obs_lp(const btree& btree, const mc_state& mc_state, const branch_data_IS& data, T obs);
 }
 
 template <typename T>
