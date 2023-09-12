@@ -227,16 +227,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // build_topo_mat
-Rcpp::IntegerMatrix build_topo_mat(Rcpp::IntegerMatrix br_mat, int n_node, int root_pos, double cutoff);
-RcppExport SEXP _MMCTime_build_topo_mat(SEXP br_matSEXP, SEXP n_nodeSEXP, SEXP root_posSEXP, SEXP cutoffSEXP) {
+Rcpp::IntegerMatrix build_topo_mat(Rcpp::IntegerMatrix br_mat, int n_node, int root_pos);
+RcppExport SEXP _MMCTime_build_topo_mat(SEXP br_matSEXP, SEXP n_nodeSEXP, SEXP root_posSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type br_mat(br_matSEXP);
     Rcpp::traits::input_parameter< int >::type n_node(n_nodeSEXP);
     Rcpp::traits::input_parameter< int >::type root_pos(root_posSEXP);
-    Rcpp::traits::input_parameter< double >::type cutoff(cutoffSEXP);
-    rcpp_result_gen = Rcpp::wrap(build_topo_mat(br_mat, n_node, root_pos, cutoff));
+    rcpp_result_gen = Rcpp::wrap(build_topo_mat(br_mat, n_node, root_pos));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -679,7 +678,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_MMCTime_times_from_taus", (DL_FUNC) &_MMCTime_times_from_taus, 2},
     {"_MMCTime_taus_from_times", (DL_FUNC) &_MMCTime_taus_from_times, 2},
     {"_MMCTime_validate_times", (DL_FUNC) &_MMCTime_validate_times, 2},
-    {"_MMCTime_build_topo_mat", (DL_FUNC) &_MMCTime_build_topo_mat, 4},
+    {"_MMCTime_build_topo_mat", (DL_FUNC) &_MMCTime_build_topo_mat, 3},
     {"_MMCTime_build_branch_data", (DL_FUNC) &_MMCTime_build_branch_data, 3},
     {"_MMCTime_find_sbounds", (DL_FUNC) &_MMCTime_find_sbounds, 4},
     {"_MMCTime_binary_to_mm", (DL_FUNC) &_MMCTime_binary_to_mm, 3},

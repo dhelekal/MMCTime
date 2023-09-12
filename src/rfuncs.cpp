@@ -126,9 +126,9 @@ bool validate_times(Rcpp::List phydata, Rcpp::List mod_state)
 }
 
 // [[Rcpp::export]]
-Rcpp::IntegerMatrix build_topo_mat(Rcpp::IntegerMatrix br_mat, int n_node, int root_pos, double cutoff)
+Rcpp::IntegerMatrix build_topo_mat(Rcpp::IntegerMatrix br_mat, int n_node, int root_pos)
 {
-    return mmctime::build_topo_mat(br_mat, n_node, root_pos, cutoff);
+    return mmctime::build_topo_mat(br_mat, n_node, root_pos);
 }
 
 // [[Rcpp::export]]

@@ -26,8 +26,7 @@ namespace mmctime
 
     Rcpp::IntegerMatrix build_topo_mat(const Rcpp::IntegerMatrix& br_mat, 
         int n_node, 
-        int root_pos,
-        double cutoff);
+        int root_pos);
 
     Rcpp::IntegerMatrix build_branch_mat(const Rcpp::IntegerMatrix& br_mat, 
         int n_node, 

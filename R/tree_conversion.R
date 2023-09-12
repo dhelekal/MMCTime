@@ -32,7 +32,7 @@ tree_to_phydata <- function(phy, dates, enable_root_move=T)
     internal_set <- (n_tip+1):n_node
     tip_set <- 1:n_tip
 
-    topo_mat <- build_topo_mat(br_mat, n_node, root_br_pos, 1e-6)
+    topo_mat <- build_topo_mat(br_mat, n_node, root_br_pos)
     sbounds <- find_sbounds(topo_mat, dates_o, n_tip, n_node-1)
 
     #return(list(edges=br_mat, 

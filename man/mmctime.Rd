@@ -7,13 +7,13 @@
 mmctime(
   phy,
   dates,
+  model,
+  fix_root = FALSE,
   n_draws = 1000,
   thin = 1000,
   n_chain = 4,
-  mm_sd = 0.7,
-  model,
+  mm_sd = sqrt(2/pi),
   verbose = FALSE,
-  fix_root = FALSE,
   ...
 )
 }
@@ -22,17 +22,17 @@ mmctime(
 
 \item{dates}{A vector of tip dates, must share names with tip labels}
 
+\item{model}{Lambda Coalescent prior selection. One of `beta` - Beta Coalescent; `km_beta` - Extended Beta Coalescent; `kingman` - Kingman's Coalescent (Binary)}
+
+\item{fix_root}{(Optional) is the root position assumed to be known. Default: FALSE}
+
 \item{n_draws}{(Optional) Number of draws per chain to retain. Default: 1e3}
 
 \item{n_chain}{(Optional) Number of chains to run in parallel. Default: 4}
 
 \item{mm_sd}{(Optional) Multiple merger move sigma. Default: 0.7}
 
-\item{model}{Lambda Coalescent prior selection. One of `beta` - Beta Coalescent; `km_beta` - Extended Beta Coalescent; `kingman` - Kingman's Coalescent (Binary)}
-
 \item{verbose}{(Optional) verbose. Default: FALSE}
-
-\item{fix_root}{(Optional) is the root position assumed to be known. Default: FALSE}
 
 \item{...}{(Optional) Additional arguments passed to parameter priors. See `PPAR_NAMES` for available prior hyperparameters and `PPAR_DEFAULTS` for default values.}
 

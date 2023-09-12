@@ -92,8 +92,7 @@ double mmctime::init_rec(const Rcpp::IntegerMatrix& topo_mat,
 
 Rcpp::IntegerMatrix mmctime::build_topo_mat(const Rcpp::IntegerMatrix& br_mat, 
     int n_node, 
-    int root_pos,
-    double cutoff)
+    int root_pos)
 {
     Rcpp::IntegerMatrix topo_mat(n_node, 4);
     std::fill(topo_mat.begin(), topo_mat.end(), NA_INTEGER);
@@ -136,7 +135,7 @@ Rcpp::IntegerMatrix mmctime::build_topo_mat(const Rcpp::IntegerMatrix& br_mat,
     topo_mat.at(root_idx, 1) = rc1 + 1;
     topo_mat.at(root_idx, 2) = rc2 + 1;
 
-    std::function<void(int, int)> fill_node = [&ie_vec, &br_mat, &topo_mat, &fill_node, r_pos_ofs, cutoff](int node, int pa_node)  
+    std::function<void(int, int)> fill_node = [&ie_vec, &br_mat, &topo_mat, &fill_node, r_pos_ofs](int node, int pa_node)  
     {
         topo_mat.at(node, 0) = pa_node + 1;
 

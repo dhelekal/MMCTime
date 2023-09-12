@@ -75,8 +75,8 @@ validate_times <- function(phydata, mod_state) {
     .Call('_MMCTime_validate_times', PACKAGE = 'MMCTime', phydata, mod_state)
 }
 
-build_topo_mat <- function(br_mat, n_node, root_pos, cutoff) {
-    .Call('_MMCTime_build_topo_mat', PACKAGE = 'MMCTime', br_mat, n_node, root_pos, cutoff)
+build_topo_mat <- function(br_mat, n_node, root_pos) {
+    .Call('_MMCTime_build_topo_mat', PACKAGE = 'MMCTime', br_mat, n_node, root_pos)
 }
 
 build_branch_data <- function(br_mat, n_node, root_pos) {
