@@ -1,16 +1,16 @@
 #' Time an ML tree under a Lambda (multiple-merger) coalescent
 #' @param phy A rooted ML tree, with branch lengths scaled in the absolute number of substitutions (not per site!). Rooting can be arbitrary.
 #' @param dates A vector of tip dates, must share names with tip labels
+#' @param model Lambda Coalescent prior selection. One of `beta` - Beta Coalescent; `km_beta` - Extended Beta Coalescent; `kingman` - Kingman's Coalescent (Binary)
+#' @param fix_root (Optional) is the root position assumed to be known. Default: FALSE
 #' @param n_draws (Optional) Number of draws per chain to retain. Default: 1e3
 #' @param n_thin (Optional) Number of iterations per retained draw. Default: 1e3
 #' @param n_chain (Optional) Number of chains to run in parallel. Default: 4
 #' @param mm_sd (Optional) Multiple merger move sigma. Default: 0.7
-#' @param model Lambda Coalescent prior selection. One of `beta` - Beta Coalescent; `km_beta` - Extended Beta Coalescent; `kingman` - Kingman's Coalescent (Binary)
 #' @param verbose (Optional) verbose. Default: FALSE
-#' @param fix_root (Optional) is the root position assumed to be known. Default: FALSE
 #' @param ... (Optional) Additional arguments passed to parameter priors. See `PPAR_NAMES` for available prior hyperparameters and `PPAR_DEFAULTS` for default values.
 #' @export
-mmctime <- function(phy, dates, n_draws=1e3, thin=1e3, n_chain=4, mm_sd=0.7, model, verbose=FALSE, fix_root=FALSE, ...) 
+mmctime <- function(phy, dates, model, fix_root=FALSE, n_draws=1e3, thin=1e3, n_chain=4, mm_sd=sqrt(2/pi), verbose=FALSE, ...) 
 {
     # Sanity checks
     stopifnot("Dates must be numeric"=is.numeric(dates))
