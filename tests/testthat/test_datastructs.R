@@ -18,7 +18,7 @@ test_that("Conversion between ape phylogenies and internal phylogeny works on a 
     phy$edge.length <- rep(5,length(phy$edge.length))
     names(dates) <- sapply(1:sum(n_samp), function(i) paste0("S", i))
 
-    d <- tree_to_phydata(phy, dates)
+    d <- suppressWarnings(tree_to_phydata(phy, dates))
     tr <- d$phydata
 
     expect_equal(tr$sbounds, c(unname(dates[phy$tip.label]), 0, 0.5, 0.53))
@@ -51,7 +51,7 @@ test_that("Conversion between times and taus agrees",
     phy$edge.length <- rep(5,length(phy$edge.length))
     names(dates) <- sapply(1:sum(n_samp), function(i) paste0("S", i))
 
-    d <- tree_to_phydata(phy, dates)
+    d <- suppressWarnings(tree_to_phydata(phy, dates))
     tr <- d$phydata
     mcs <- init_tree_state(tr, d$branch_lens, dates[phy$tip.label], mu_init=mu)
 
@@ -92,7 +92,7 @@ test_that("Deep copy functions work",
     phy$edge.length <- rpois(length(phy$edge.length), mu * phy$edge.length)
     names(dates) <- sapply(1:sum(n_samp), function(i) paste0("S", i))
 
-    d <- tree_to_phydata(phy, dates)
+    d <- suppressWarnings(tree_to_phydata(phy, dates))
     tr <- d$phydata
     mcs <- init_tree_state(tr, d$branch_lens, dates[phy$tip.label], mu_init=mu)
     taus_from_times(tr, mcs)
@@ -136,7 +136,7 @@ test_that("Internal binary tree representation agrees with binary tree simulator
 
     phy$edge.length <- rpois(length(phy$edge.length), mu * phy$edge.length)
     
-    d <- tree_to_phydata(phy, dates)
+    d <- suppressWarnings(tree_to_phydata(phy, dates))
     tr <- d$phydata
     mcs <- init_tree_state(tr, d$branch_lens, mu, times_init=phy_times)
     taus_from_times(tr, mcs)
@@ -185,7 +185,7 @@ test_that("Internal multi merger tree representation agrees with multi merger tr
     names(dates) <- sapply(1:sum(n_samp), function(i) paste0("S", i))
     phy$edge.length <- rpois(length(phy$edge.length), mu * phy$edge.length)
     
-    d <- tree_to_phydata(phy, dates)
+    d <- suppressWarnings(tree_to_phydata(phy, dates))
     tr <- d$phydata
     mcs <- init_tree_state(tr, d$branch_lens, dates[phy$tip.label], mu_init=mu, times_init=phy_times)
     taus_from_times(tr, mcs)

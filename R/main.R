@@ -94,5 +94,5 @@ mmctime <- function(phy, dates, model, fix_root=FALSE, n_draws=1e3, thin=1e3, n_
     n_taus <- N-1
 
     trace <- make_trace(mod, draws, n_qs, n_taus, n_times, n_pa)
-    return(timingRes(post_process_trace(trace, phydata), undated, mod$names_par_obs, mod$names_par_tree, mod$names_summaries, par_prior))
+    return(timingRes(post_process_trace(trace, phydata), undated, dates, mod$names_par_obs, mod$names_par_tree, mod$names_summaries, par_prior))
 }

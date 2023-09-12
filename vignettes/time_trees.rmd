@@ -1,0 +1,76 @@
+---
+title: "MMCTime"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MMCTime}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#>")
+options(tibble.print_min = 4, tibble.print_max = 4)
+```
+
+Load packages
+```{r}
+library(MMCTime)
+library(ape)
+library(ggtree)
+library(dplyr)
+set.seed(12345678)
+```
+
+This vignette demonstrates the basic usage of the MMCTime package.
+We illustrate the use on a simulated phylogeny.
+
+Simulate a genealogy from the Beta-coalescent
+```{r,out.width="100%", dpi=300}
+n_tips <- 100
+samp_times <- 2020:2016
+n_samp <- as.vector(rmultinom(1, n_tips, rep(1/5, 5)))
+
+alpha <- 0.4
+nu <- 1/4
+sim <- simulate_beta(samp_times, n_samp, nu, alpha)
+
+plot_mm_tree(sim$phy)+geom_tiplab(size=1.0)
+print(sim$dates)
+```
+
+Simulate a mutation scaled phylogeny
+```{r,out.width="100%", dpi=300}
+phy_mut <- simulate_mut_arc(sim$phy, mu=1.0, omega=1.5)
+ggtree(phy_mut) + geom_tiplab(size=1.0)
+```
+
+Time the phylogeny assuming the rooting is unknown, running 4 chains in parallel
+We are using a rather low number of iterations here so that the vignette doesn't run for too long.
+If the root position was known for example through the use of outgroup rooting, fix_root should be set to TRUE.
+```{r}
+res1 <- mmctime(phy_mut, sim$dates, model="beta", fix_root=FALSE, n_draws=5e2, thin=5e2) 
+```
+Print summaries. The Credible intervals cover simulation values rather well.
+```{r}
+print(res1$summaries, n=10)
+```
+
+Determine the tip order in the ground truth tree
+```{r}
+tip.order <- fortify(as.phylo(sim$phy), layout="rectangular") %>%
+    dplyr::filter(.data$isTip) %>%
+    dplyr::arrange(.data$y) %>%
+    dplyr::pull("label")
+```
+First, plot a qualitative summary, using the ground truth tip order to enable easy comparison
+```{r,fig.width=10, fig.height=10}
+plot_densiCI(res1,tip.order=tip.order) + geom_tiplab()
+```
+Next, plot 16 posterior draws
+```{r,fig.width=10, fig.height=10}
+plot_mm_tree(sample_timetree(res1,16))
+```
+Finally, plot parameter pairs
+```{r,fig.width=10, fig.height=10}
+plot_pars(res1)
+```
