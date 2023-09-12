@@ -61,6 +61,7 @@ simulate_durret_schweinsberg <- function(samp_times, n_samp, phi, nu)
 #' @param nu nu
 #' @param alpha alpha^*
 #' @return a list consisting of sampling dates for each tip and the resulting phylogeny
+#' @export
 simulate_beta <- function(samp_times, n_samp, nu, alpha)
 {
     stopifnot("nu must be positive"= nu > 0)
