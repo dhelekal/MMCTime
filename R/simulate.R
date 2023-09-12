@@ -1,3 +1,10 @@
+#' Simulate a phylogeny from the extended beta coalescent
+#' @param samp_times sampling epochs
+#' @param n_samp number of samples per epoch
+#' @param phi phi
+#' @param nu nu
+#' @param alpha alpha^*
+#' @return a list consisting of sampling dates for each tip and the resulting phylogeny
 #' @export
 simulate_km_beta <- function(samp_times, n_samp, phi, nu, alpha)
 {
@@ -21,7 +28,12 @@ simulate_km_beta <- function(samp_times, n_samp, phi, nu, alpha)
 
     return(list(phy=phy, dates=dates, lp=res$sim_lp))
 }
-
+#' Simulate a phylogeny from a particular durrett and schweinsberg coalescent. Experimental.
+#' @param samp_times sampling epochs
+#' @param n_samp number of samples per epoch
+#' @param phi phi
+#' @param nu nu
+#' @return a list consisting of sampling dates for each tip and the resulting phylogeny
 #' @export
 simulate_durret_schweinsberg <- function(samp_times, n_samp, phi, nu)
 {
@@ -45,7 +57,10 @@ simulate_durret_schweinsberg <- function(samp_times, n_samp, phi, nu)
     return(list(phy=phy, dates=dates, lp=res$sim_lp))
 }
 
-#' @export
+#' Simulate a phylogeny from the beta coalescent
+#' @param nu nu
+#' @param alpha alpha^*
+#' @return a list consisting of sampling dates for each tip and the resulting phylogeny
 simulate_beta <- function(samp_times, n_samp, nu, alpha)
 {
     stopifnot("nu must be positive"= nu > 0)
@@ -67,7 +82,11 @@ simulate_beta <- function(samp_times, n_samp, nu, alpha)
     return(list(phy=phy, dates=dates, lp=res$sim_lp))
 }
 
-#' @export
+#' Simulate a phylogeny from kingmans coalescent
+#' @param samp_times sampling epochs
+#' @param n_samp number of samples per epoch
+#' @param nu nu
+#' @return a list consisting of sampling dates for each tip and the resulting phylogeny
 simulate_kingman <- function(samp_times, n_samp, nu)
 {
     stopifnot("nu must be positive"= nu > 0)
@@ -88,7 +107,11 @@ simulate_kingman <- function(samp_times, n_samp, nu)
     return(list(phy=phy, dates=dates, lp=res$sim_lp))
 }
 
-#' @export
+#' Simulate a mutation scaled phylogeny from a coalescent genealogy
+#' @param phy genealogy
+#' @param mu mu
+#' @param omega omega
+#' @return a mutation scaled phylogeny
 simulate_mut_arc <- function(phy, mu, omega)
 {
     phy_mut <- phy
