@@ -1,7 +1,7 @@
 #include "prob_utils.h"
 #include <limits>
 #include <cmath>
-#include <cstring>
+#include <string>
 
 double mmctime::log_1m_exp(double x)
 {

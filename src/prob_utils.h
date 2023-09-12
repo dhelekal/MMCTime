@@ -3,7 +3,6 @@
 
 #include <cmath>
 #include <stdexcept>
-#include <cstring>
 #include <algorithm>
 namespace mmctime
 {
