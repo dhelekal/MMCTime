@@ -7,7 +7,7 @@ Maintainer: David Helekal <david.helekal@gmail.com>
 Depends: R (>= 4.0.0)
 LinkingTo: Rcpp
 Imports: Rcpp, ape, ggtree, treeio, tibble, dplyr, viridis, posterior, bayesplot, patchwork, foreach, parallel, iterators, doParallel, doRNG, ggblend
-Suggests: knitr, testthat, rmarkdown
+Suggests: knitr, testthat, rmarkdown, hexbin
 Description: Timing phylogenies under Lambda Coalescents
 VignetteBuilder: knitr
 License: GNU GPL-3
