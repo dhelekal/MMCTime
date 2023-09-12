@@ -88,6 +88,7 @@ simulate_beta <- function(samp_times, n_samp, nu, alpha)
 #' @param n_samp number of samples per epoch
 #' @param nu nu
 #' @return a list consisting of sampling dates for each tip and the resulting phylogeny
+#' @export
 simulate_kingman <- function(samp_times, n_samp, nu)
 {
     stopifnot("nu must be positive"= nu > 0)
@@ -113,6 +114,7 @@ simulate_kingman <- function(samp_times, n_samp, nu)
 #' @param mu mu
 #' @param omega omega
 #' @return a mutation scaled phylogeny
+#' @export
 simulate_mut_arc <- function(phy, mu, omega)
 {
     phy_mut <- phy
