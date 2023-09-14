@@ -98,7 +98,7 @@ We can further look at the posterior probability that the posterior tree contain
 
 Since the q-variables indicate multiple mergers, we can simply sum these for each iterations and count the iterations where this sum equals 0. This gives the number of purely binary trees.
 
-Observe that for the kingman posterior more than 1 in 12 trees is binary, whereas for the beta posterior it is less than 1 in a thousand.
+Observe that for the kingman posterior more than 1 in 7 trees are binary, whereas for the beta posterior the probability of a binary tree is 0
 ```{r,eval=T}
 p_no_mm <- function(x)
 {
