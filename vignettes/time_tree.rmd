@@ -18,59 +18,135 @@ library(MMCTime)
 library(ape)
 library(ggtree)
 library(dplyr)
+library(ggplot2)
 set.seed(12345678)
 ```
 
 This vignette demonstrates the basic usage of the MMCTime package.
 We illustrate the use on a simulated phylogeny.
 
+## Simulations
+
 Simulate a genealogy from the Beta-coalescent
 ```{r,out.width="100%", dpi=300}
 n_tips <- 100
 samp_times <- 2020:2016
-n_samp <- as.vector(rmultinom(1, n_tips, rep(1/5, 5)))
+n_samp_beta <- as.vector(rmultinom(1, n_tips, rep(1/5, 5)))
 
 alpha <- 0.4
 nu <- 1/4
-sim <- simulate_beta(samp_times, n_samp, nu, alpha)
+sim_beta <- simulate_beta(samp_times, n_samp_beta, nu, alpha)
 
-plot_mm_tree(sim$phy)+geom_tiplab(size=1.0)
-print(sim$dates)
+plot_mm_tree(sim_beta$phy)+geom_tiplab(size=1.0)
+print(sim_beta$dates)
 ```
 
-Simulate a mutation scaled phylogeny
+Simulate a genealogy from Kingman's coalescent
 ```{r,out.width="100%", dpi=300}
-phy_mut <- simulate_mut_arc(sim$phy, mu=1.0, omega=1.5)
-ggtree(phy_mut) + geom_tiplab(size=1.0)
+n_samp_km <- as.vector(rmultinom(1, n_tips, rep(1/5, 5)))
+
+sim_km <- simulate_kingman(samp_times, n_samp_km, nu)
+
+plot_mm_tree(sim_km$phy)+geom_tiplab(size=1.0)
+print(sim_km$dates)
 ```
 
-Time the phylogeny assuming the rooting is unknown, running 4 chains in parallel
-We are using a rather low number of iterations here so that the vignette doesn't run for too long.
+Simulate a mutation scaled phylogenies and plot them side by side
+We can see that both have polytomies but visually the kingman tree has less uniform branch lengths.
+```{r,out.width="45%", fig.show='hold', dpi=300}
+phy_mut_beta <- simulate_mut_arc(sim_beta$phy, mu=1.0, omega=0.5)
+phy_mut_km <- simulate_mut_arc(sim_km$phy, mu=1.0, omega=0.5)
+
+ggtree(phy_mut_beta) + geom_tiplab(size=1.0) + ggtitle("Beta")
+ggtree(phy_mut_km) + geom_tiplab(size=1.0) + ggtitle("Kingman")
+```
+
+## Inference
+
+Time the phylogeny assuming the rooting is unknown, running 4 chains in parallel.
+
 If the root position was known for example through the use of outgroup rooting, fix_root should be set to TRUE.
-```{r}
-res1 <- mmctime(phy_mut, sim$dates, model="beta", fix_root=FALSE, n_draws=5e2, thin=5e2) 
-```
-Print summaries. The Credible intervals cover simulation values rather well.
-```{r}
-print(res1$summaries, n=10)
+
+Note: This sort of analysis requires good temporal signal!
+
+In practice you might want to run the chains for longer in case of low signal trees like these, especially the kingman tree.
+
+```{r,eval=T}
+res_beta <- mmctime(phy_mut_beta, sim_beta$dates, model="beta", fix_root=FALSE, n_draws=1e3, thin=1e3) 
+res_km <- mmctime(phy_mut_km, sim_km$dates, model="beta", fix_root=FALSE, n_draws=1e3, thin=1e3) 
 ```
 
-Determine the tip order in the ground truth tree
+## Summaries and analysis
+
+Print summaries for beta. The Credible intervals cover simulation values rather well.
 ```{r}
-tip.order <- fortify(as.phylo(sim$phy), layout="rectangular") %>%
-    dplyr::filter(.data$isTip) %>%
-    dplyr::arrange(.data$y) %>%
-    dplyr::pull("label")
+print(res_beta$summaries, n=10)
 ```
-First, plot a qualitative summary, using the ground truth tip order to enable easy comparison
-```{r,fig.width=10, fig.height=10}
-plot_densiCI(res1,tip.order=tip.order) + geom_tiplab()
+Same as above but for kingman
+```{r}
+print(res_km$summaries, n=10)
 ```
-Next, plot 16 posterior draws
-```{r,fig.width=10, fig.height=10}
-plot_mm_tree(sample_timetree(res1,16))
+Plot the alpha parameter marginals.
+
+We can clearly see that the alpha marginal concentrates around 1.0 for the kingman tree, i.e. the kingman limit of the beta coalescent.
+```{r,out.width="100%", dpi=300}
+alpha_df <- rbind(cbind(res_beta$draws[,c("alpha")],tree="beta"), cbind(res_km$draws[,c("alpha")],tree="kingman"))
+ggplot(alpha_df) + geom_histogram(aes(x=alpha))+ facet_grid(rows=vars(tree))+theme_minimal()
 ```
-Finally, plot parameter pairs
+
+We can further look at the posterior probability that the posterior tree contains no multiple mergers.
+
+Since the q-variables indicate multiple mergers, we can simply sum these for each iterations and count the iterations where this sum equals 0. This gives the number of purely binary trees.
+
+Observe that for the kingman posterior more than 1 in 12 trees is binary, whereas for the beta posterior it is less than 1 in a thousand.
+```{r}
+p_no_mm <- function(x)
+{
+  sum(apply(suppressWarnings(x$draws[,paste0("q_",1:199)]), 1, sum)==0)/x$n_draws
+}
+
+paste0("Posterior probability that a tree from the kingman posterior is binary: ", p_no_mm(res_km))
+paste0("Posterior probability that a tree from the beta posterior is binary: ", p_no_mm(res_beta))
+```
+
+## Further Visualisation
+First we aim to plot a qualitative densitree.
+
+Determine the tip order in the ground truth tree.
+```{r}
+get_tip_ord <- function(x)
+{
+  fortify(as.phylo(x), layout="rectangular") %>%
+      dplyr::filter(.data$isTip) %>%
+      dplyr::arrange(.data$y) %>%
+      dplyr::pull("label")
+}
+```
+Plot a densitree for the beta posterior using the ground truth tip order to enable easy comparison.
+```{r,fig.width=10, fig.height=10, message=FALSE, warning=FALSE}
+plot_densiCI(res_beta,tip.order=get_tip_ord(sim_beta$phy)) + geom_tiplab()
+```
+Same as above but for kingman tree.
+```{r,fig.width=10, fig.height=10, message=FALSE, warning=FALSE}
+plot_densiCI(res_km,tip.order=get_tip_ord(sim_km$phy)) + geom_tiplab()
+```
+In practice what tends to happen is that for binary trees the multiple mergers fail to concentrate. 
+
+We stress that this sort of setup is, however, designed for inference not model selection!
+
+Next, plot 16 posterior draws for the beta posterior.
 ```{r,fig.width=10, fig.height=10}
-plot_pars(res1)
+plot_mm_tree(sample_timetree(res_beta,16))
+```
+And for the kingman posterior.
+```{r,fig.width=10, fig.height=10}
+plot_mm_tree(sample_timetree(res_km,16))
+```
+Plot parameter pairs for the beta posterior.
+```{r,fig.width=10, fig.height=10}
+plot_pars(res_beta)
+```
+Follwoed by the traces.
+```{r,fig.width=10, fig.height=10}
+plot_traces(res_beta)
 ```
