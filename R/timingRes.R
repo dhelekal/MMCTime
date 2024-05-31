@@ -2,14 +2,15 @@ timingRes <- function(draws_df, undated, sampling_dates, names_par_obs, names_pa
 {
     n_draws <- nrow(draws_df)
     root_n <- length(undated$tip.label) + 1
+    draws_df$tree_length <- sapply(1:n_draws, function(i) comp_treelen(sample2tree_internal(draws_df, undated, i)))
     s <- summarise_draws(draws_df)
-    s <- s[s$variable %in% c(paste0("t_", root_n), names_par_obs, names_par_tree, names_summaries), ]
+    s <- s[s$variable %in% c(paste0("t_", root_n), names_par_obs, names_par_tree, names_summaries, "tree_length"), ]
 
     out <- list(draws=draws_df, 
         undated=undated, 
         sampling_dates=sampling_dates,
         n_draws=n_draws,
-        summaries = s, 
+        summaries=s, 
         names_par_obs=names_par_obs, 
         names_par_tree=names_par_tree, 
         names_summaries=names_summaries,
@@ -17,7 +18,6 @@ timingRes <- function(draws_df, undated, sampling_dates, names_par_obs, names_pa
     attr(out, "class") <- "timingRes"
     return(out)
 }
-
 
 #' @export
 sample_timetree <- function(x, ...) UseMethod("sample_timetree")
@@ -39,7 +39,17 @@ build_cons_tree <- function(x, ...) UseMethod("build_cons_tree")
 #' @export
 summary.timingRes <- function(x)
 {
-    cat("\nMutlimerger tree timing result:", deparse(substitute(object)), "\n\n")
+    cat("\nMutlimerger tree timing result:", deparse(substitute(x)), "\n\n")
+    cat("Summary:\n")
+    print(x$summaries)
+}
+
+#' @export
+print.timingRes <- function(x)
+{
+    cat("\nMutlimerger tree timing result:", deparse(substitute(x)), "\n\n")
+    cat("Summary:\n")
+    print(x$summaries)
 }
 
 #' Sample time tree from the posterior

@@ -354,10 +354,8 @@ mmcutils::clade_tree mmcutils::make_m_tree(const clade_table& table, int cutoff)
         
         return mm_tmp.at(k);
     };
-    int last_i = 0; 
     for (int i = 0; i < table.n_clades; i++)
     {
-        last_i = i;
         const int j = table.order.at(i);
         if (table.counts.at(j) >= cutoff)
         {

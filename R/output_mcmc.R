@@ -5,19 +5,24 @@ times_to_elen <- function(phy, ts)
     return(phy)
 }
 
-sample2tree <-function(x, s_idx)
+comp_treelens <- function(phy)
 {
-    m <- length(x$undated$tip.label)
+    return(sum(phy$edge.length))
+}
+
+sample2tree_internal <- function(draws, undated, s_idx)
+{
+    m <- length(undated$tip.label)
     n <- 2*m-1
 
-    tiplabs <- x$undated$tip.label
+    tiplabs <- undated$tip.label
     edge <- matrix(-1L, n, 2)
 
     time_cols <- paste0("t_", 1:n)
     pa_cols <- paste0("pa_", 1:n)
 
-    ts <- suppressWarnings(unlist(x$draws[s_idx, time_cols]))
-    pas <- suppressWarnings(unlist(x$draws[s_idx, pa_cols]))
+    ts <- suppressWarnings(unlist(draws[s_idx, time_cols]))
+    pas <- suppressWarnings(unlist(draws[s_idx, pa_cols]))
 
     edge[,2] <- 1L:n
     edge[,1] <- pas
@@ -29,6 +34,12 @@ sample2tree <-function(x, s_idx)
     class(tr) <- "phylo"
 
     return(tr)
+}
+
+sample2tree <-function(x, s_idx)
+{
+
+    return(sample2tree(x$draws, x$undated, s_idx))
 }
 
 maj_rule_tree <- function(trees)
