@@ -38,8 +38,7 @@ sample2tree_internal <- function(draws, undated, s_idx)
 
 sample2tree <-function(x, s_idx)
 {
-
-    return(sample2tree(x$draws, x$undated, s_idx))
+    return(sample2tree_internal(x$draws, x$undated, s_idx))
 }
 
 maj_rule_tree <- function(trees)
