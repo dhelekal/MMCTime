@@ -66,9 +66,14 @@ sample_timetree.timingRes  <- function(x, n_samp=1, replace=TRUE)
     if (n_samp == 1)
     {
         out <- di2multi(sample2tree(x, draws))
+        out$root.edge <- 0
     } else
     {
-        out <- lapply(draws, function(j) di2multi(sample2tree(x, j)))
+        out <- lapply(draws, function(j) {
+            t <- di2multi(sample2tree(x, j))
+            t$root.edge <- 0
+            t
+        })
         class(out) <- "multiPhylo"
     }
     
